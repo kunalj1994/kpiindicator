@@ -25,8 +25,8 @@
   },
   "dependencies": {
     "d3": "^3.5.5",
-    "jquery": "^3.1.1",
-    "lodash": "^4.17.4",
-    "powerbi-visuals-utils-formattingutils": "^0.4.0"
+    "jquery": "^3.5.1",
+    "lodash": "^4.17.15",
+    "powerbi-visuals-utils-formattingutils": "^4.6.0"
   }
 }

@@ -4,6 +4,7 @@ var sFontFamily: any = "font-family:'Segoe UI',wf_segoe-ui_normal,helvetica,aria
 //var sFontFamily: any = "";
 
 import valueFormatter = powerbi.extensibility.utils.formatting.valueFormatter;
+import ISelectionManager = powerbi.extensibility.ISelectionManager;
 
 function truncate(value)
 {
@@ -516,6 +517,7 @@ module powerbi.extensibility.visual {
         public kpiTrendTargetExists: boolean;
 
         private tooltipServiceWrapper: ITooltipServiceWrapper;
+        private selectionManager: ISelectionManager;
 
         constructor(options: VisualConstructorOptions) {
 
@@ -539,6 +541,8 @@ module powerbi.extensibility.visual {
             this.sLeftCustomBorder = this.sMainGroupElement.append("rect");
 
             this.tooltipServiceWrapper = createTooltipServiceWrapper(this.host.tooltipService, options.element);
+            
+            this.selectionManager = options.host.createSelectionManager();
         }
 
         private renderTitle(titleText: string, sW: number, iBox1H: number, textColor: Fill, iSize: number) {
@@ -740,6 +744,17 @@ module powerbi.extensibility.visual {
                 'height': height,
                 'width': width
             });
+
+            this.svg.on('contextmenu', () => {
+                const mouseEvent: MouseEvent = d3.event as MouseEvent;
+                const eventTarget: EventTarget = mouseEvent.target;
+                let dataPoint = d3.select(eventTarget).datum();
+                this.selectionManager.showContextMenu(dataPoint ? dataPoint.selectionId : {}, {
+                    x: mouseEvent.clientX,
+                    y: mouseEvent.clientY
+                });
+                mouseEvent.preventDefault();
+            }); 
 
             this.sMainRect
                 .attr("x", 0)
